@@ -1,8 +1,12 @@
 package different
 
 import (
+	"errors"
 	"reflect"
 	"testing"
+
+	"github.com/r3labs/diff/v2"
+	"github.com/undefinedlabs/go-mpatch"
 )
 
 func TestGenerateDiff(t *testing.T) {
@@ -22,6 +26,7 @@ func TestGenerateDiff(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
+		patch   func()
 		want    []byte
 		wantErr bool
 	}{
@@ -37,6 +42,7 @@ func TestGenerateDiff(t *testing.T) {
 					Age:  12,
 				},
 			},
+			patch:   func() {},
 			want:    []byte(`[{"Name":{"before":"Alhamsya","after":"Bintang"}}]`),
 			wantErr: false,
 		},
@@ -46,17 +52,44 @@ func TestGenerateDiff(t *testing.T) {
 				origin: nil,
 				new:    nil,
 			},
+			patch:   func() {},
 			want:    nil,
 			wantErr: false,
 		},
 		{
-			name: "When_deepEqual_ReturnNil",
+			name: "When_diff_ReturnError",
 			args: args{
-				origin: nil,
-				new:    nil,
+				origin: &User{
+					Name: "Alhamsya",
+					Age:  10,
+				},
+				new: &User{
+					Name: "Bintang",
+					Age:  12,
+				},
+			},
+			patch: func() {
+				var guard *mpatch.Patch
+				guard, _ = mpatch.PatchMethod(diff.Diff, func(a, b interface{}, opts ...func(d *diff.Differ) error) (diff.Changelog, error) {
+					defer guard.Unpatch()
+					return nil, errors.New("error diff.Diff")
+				})
 			},
 			want:    nil,
-			wantErr: false,
+			wantErr: true,
+		},
+		{
+			name: "When_typeDiffNotUpdate_ReturnError",
+			args: args{
+				origin: &User{
+					Name: "Alhamsya",
+					Age:  10,
+				},
+				new: nil,
+			},
+			patch:   func() {},
+			want:    nil,
+			wantErr: true,
 		},
 		{
 			name: "When_originParamIsNil_ReturnError",
@@ -67,24 +100,14 @@ func TestGenerateDiff(t *testing.T) {
 				},
 				new: &Dummy{},
 			},
+			patch:   func() {},
 			want:    nil,
 			wantErr: true,
-		},
-		{
-			name: "When_originParamIsNil_ReturnError",
-			args: args{
-				origin: &User{},
-				new: &User{
-					Name: "Alhamsya",
-					Age:  10,
-				},
-			},
-			want:    []byte(`[{"Name":{"before":"","after":"Alhamsya"}}]`),
-			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			tt.patch()
 			got, err := GenerateDiff(tt.args.origin, tt.args.new)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GenerateDiff() error = %v, wantErr %v", err, tt.wantErr)
