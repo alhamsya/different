@@ -2,6 +2,7 @@
 
 [![Sourcegraph](https://sourcegraph.com/github.com/alhamsya/different/-/badge.svg)](https://sourcegraph.com/github.com/alhamsya/different?badge)
 [![Documentation](https://godoc.org/github.com/alhamsya/different?status.svg)](https://godoc.org/github.com/alhamsya/different)
+[![codecov](https://codecov.io/gh/alhamsya/different/branch/master/graph/badge.svg?token=P7LSAI3V6S)](https://codecov.io/gh/alhamsya/different)
 [![Awesome](https://cdn.rawgit.com/alhamsya/different/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/alhamsya/different)
 [![rcard](https://goreportcard.com/badge/github.com/alhamsya/different)](https://goreportcard.com/report/github.com/alhamsya/different)
 [![License](http://img.shields.io/badge/license-mit-blue.svg?style=flat-square)](https://raw.githubusercontent.com/alhamsya/different/master/LICENSE)
