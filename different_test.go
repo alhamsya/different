@@ -11,7 +11,9 @@ func TestGenerateDiff(t *testing.T) {
 		Age  int `diff:"-"`
 	}
 
-	result := `[{"Name":{"before":"Alhamsya","after":"Bintang"}}]`
+	type Dummy struct {
+		Error string
+	}
 
 	type args struct {
 		origin interface{}
@@ -24,7 +26,7 @@ func TestGenerateDiff(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "When_test1",
+			name: "When_structureDataIsDifferent_ReturnSuccess",
 			args: args{
 				origin: &User{
 					Name: "Alhamsya",
@@ -32,10 +34,52 @@ func TestGenerateDiff(t *testing.T) {
 				},
 				new: &User{
 					Name: "Bintang",
+					Age:  12,
+				},
+			},
+			want:    []byte(`[{"Name":{"before":"Alhamsya","after":"Bintang"}}]`),
+			wantErr: false,
+		},
+		{
+			name: "When_deepEqual_ReturnNil",
+			args: args{
+				origin: nil,
+				new:    nil,
+			},
+			want:    nil,
+			wantErr: false,
+		},
+		{
+			name: "When_deepEqual_ReturnNil",
+			args: args{
+				origin: nil,
+				new:    nil,
+			},
+			want:    nil,
+			wantErr: false,
+		},
+		{
+			name: "When_originParamIsNil_ReturnError",
+			args: args{
+				origin: &User{
+					Name: "Alhamsya",
+					Age:  10,
+				},
+				new: &Dummy{},
+			},
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name: "When_originParamIsNil_ReturnError",
+			args: args{
+				origin: &User{},
+				new: &User{
+					Name: "Alhamsya",
 					Age:  10,
 				},
 			},
-			want:    []byte(result),
+			want:    []byte(`[{"Name":{"before":"","after":"Alhamsya"}}]`),
 			wantErr: false,
 		},
 	}
@@ -50,27 +94,5 @@ func TestGenerateDiff(t *testing.T) {
 				t.Errorf("GenerateDiff() = %v, want %v", got, tt.want)
 			}
 		})
-	}
-}
-
-func BenchmarkGenerateDiff(b *testing.B) {
-	type User struct {
-		Name string
-		Age  int `diff:"-"`
-	}
-
-	origin := &User{
-		Name: "Alhamsya",
-		Age:  10,
-	}
-
-	new := &User{
-		Name: "Bintang",
-		Age:  10,
-	}
-
-	b.ReportAllocs()
-	for i := 0; i < b.N; i++ {
-		GenerateDiff(origin, new)
 	}
 }
