@@ -25,7 +25,7 @@ type Telephone struct {
 }
 
 func main() {
-	origin := User{
+	origin := &User{
 		Name: "Alhamsya",
 		Age:  23,
 		Address: Address{
@@ -38,7 +38,7 @@ func main() {
 		},
 	}
 
-	newData := User{
+	newData := &User{
 		Name: "Bintang",
 		Age:  25,
 		Address: Address{

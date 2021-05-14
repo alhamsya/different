@@ -21,23 +21,17 @@ func GenerateDiff(originData interface{}, newData interface{}) ([]byte, error) {
 		return nil, GenerateError(err, "library")
 	}
 
-	//builder
+	//builder different value
 	var temp []interface{}
 	for _, data := range changelog {
 		var res interface{}
-		for i := len(data.Path) - 1; i >= 0; i-- {
-			if i == len(data.Path)-1 {
-				res = map[string]interface{}{
-					data.Path[i]: map[string]interface{}{
-						"before": data.From,
-						"after":  data.To,
-					},
-				}
-			} else {
-				res = map[string]interface{}{
-					data.Path[i]: res,
-				}
+		if len(data.Path) == 0 {
+			res = map[string]interface{}{
+				"before": data.From,
+				"after":  data.To,
 			}
+		} else {
+			res = BuildBeforeAfter(data)
 		}
 		temp = append(temp, res)
 	}

@@ -1,9 +1,6 @@
 package different
 
 import (
-	"errors"
-	"github.com/r3labs/diff/v2"
-	"github.com/undefinedlabs/go-mpatch"
 	"testing"
 )
 
@@ -34,36 +31,34 @@ func TestGenerateDiff(t *testing.T) {
 	}
 
 	type args struct {
-		origin interface{}
-		new    interface{}
+		originData interface{}
+		newData    interface{}
 	}
 	tests := []struct {
 		name    string
 		args    args
-		patch   func()
 		want    []byte
 		wantErr bool
 	}{
 		{
 			name: "When_structureDataIsDifferent_ReturnSuccess",
 			args: args{
-				origin: &User{
+				originData: &User{
 					Name: "Alhamsya",
 					Age:  10,
 				},
-				new: &User{
+				newData: &User{
 					Name: "Bintang",
 					Age:  12,
 				},
 			},
-			patch:   func() {},
 			want:    []byte(`[{"Name":{"before":"Alhamsya","after":"Bintang"}}]`),
 			wantErr: false,
 		},
 		{
 			name: "When_nestedStructureDataIsDifferent_ReturnSuccess",
 			args: args{
-				origin: &ContactInfo{
+				originData: &ContactInfo{
 					Name: "Alhamsya",
 					Phone: Phone{
 						PhoneNumber: "085xxxxxxxx",
@@ -72,7 +67,7 @@ func TestGenerateDiff(t *testing.T) {
 						City: "Jakarta",
 					},
 				},
-				new: &ContactInfo{
+				newData: &ContactInfo{
 					Name: "Alhamsya Bintang Dyasta",
 					Phone: Phone{
 						PhoneNumber: "082xxxxxxxx",
@@ -82,38 +77,35 @@ func TestGenerateDiff(t *testing.T) {
 					},
 				},
 			},
-			patch:   func() {},
 			want:    []byte(`[{"Name":{"before":"Alhamsya","after":"Alhamsya Bintang Dyasta"}},{"Phone":{"PhoneNumber":{"before":"085xxxxxxxx","after":"082xxxxxxxx"}}},{"Address":{"City":{"before":"Jakarta","after":"Kediri"}}}]`),
 			wantErr: false,
 		},
 		{
 			name: "When_deepEqual_ReturnNil",
 			args: args{
-				origin: nil,
-				new:    nil,
+				originData: nil,
+				newData:    nil,
 			},
-			patch:   func() {},
 			want:    nil,
+			wantErr: false,
+		},
+		{
+			name: "When_TypeInteger_ReturnNil",
+			args: args{
+				originData: 1,
+				newData:    2,
+			},
+			want:    []byte(`[{"before":1,"after":2}]`),
 			wantErr: false,
 		},
 		{
 			name: "When_diff_ReturnError",
 			args: args{
-				origin: &User{
+				originData: &User{
 					Name: "Alhamsya",
 					Age:  10,
 				},
-				new: &User{
-					Name: "Bintang",
-					Age:  12,
-				},
-			},
-			patch: func() {
-				var guard *mpatch.Patch
-				guard, _ = mpatch.PatchMethod(diff.Diff, func(a, b interface{}, opts ...func(d *diff.Differ) error) (diff.Changelog, error) {
-					defer guard.Unpatch()
-					return nil, errors.New("error diff.Diff")
-				})
+				newData: 1,
 			},
 			want:    nil,
 			wantErr: true,
@@ -121,34 +113,31 @@ func TestGenerateDiff(t *testing.T) {
 		{
 			name: "When_typeDiffNotUpdate_ReturnError",
 			args: args{
-				origin: &User{
+				originData: &User{
 					Name: "Alhamsya",
 					Age:  10,
 				},
-				new: nil,
+				newData: nil,
 			},
-			patch:   func() {},
 			want:    nil,
 			wantErr: false,
 		},
 		{
 			name: "When_originParamIsNil_ReturnError",
 			args: args{
-				origin: &User{
+				originData: &User{
 					Name: "Alhamsya",
 					Age:  10,
 				},
-				new: &Dummy{},
+				newData: &Dummy{},
 			},
-			patch:   func() {},
 			want:    nil,
 			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			tt.patch()
-			_, err := GenerateDiff(tt.args.origin, tt.args.new)
+			_, err := GenerateDiff(tt.args.originData, tt.args.newData)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GenerateDiff() error = %v, wantErr %v", err, tt.wantErr)
 				return
