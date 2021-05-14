@@ -1,7 +1,6 @@
 package different
 
 import (
-	"errors"
 	"reflect"
 
 	"github.com/r3labs/diff/v2"
@@ -25,10 +24,6 @@ func GenerateDiff(originData interface{}, newData interface{}) ([]byte, error) {
 	//builder
 	var temp []interface{}
 	for _, data := range changelog {
-		if data.Type != diff.UPDATE {
-			return nil, GenerateError(errors.New("type different struct not update"), "originData")
-		}
-
 		var res interface{}
 		for i := len(data.Path) - 1; i >= 0; i-- {
 			if i == len(data.Path)-1 {

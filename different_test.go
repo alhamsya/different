@@ -2,10 +2,9 @@ package different
 
 import (
 	"errors"
-	"testing"
-
 	"github.com/r3labs/diff/v2"
 	"github.com/undefinedlabs/go-mpatch"
+	"testing"
 )
 
 func TestGenerateDiff(t *testing.T) {
@@ -130,7 +129,7 @@ func TestGenerateDiff(t *testing.T) {
 			},
 			patch:   func() {},
 			want:    nil,
-			wantErr: true,
+			wantErr: false,
 		},
 		{
 			name: "When_originParamIsNil_ReturnError",
@@ -143,7 +142,7 @@ func TestGenerateDiff(t *testing.T) {
 			},
 			patch:   func() {},
 			want:    nil,
-			wantErr: true,
+			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
