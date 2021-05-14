@@ -15,6 +15,22 @@ func TestGenerateDiff(t *testing.T) {
 		Age  int `diff:"-"`
 	}
 
+	type Phone struct {
+		Type        string
+		PhoneNumber string
+	}
+
+	type Address struct {
+		City   string
+		Street string
+	}
+
+	type ContactInfo struct {
+		Name  string
+		Phone Phone
+		Address
+	}
+
 	type Dummy struct {
 		Error string
 	}
@@ -44,6 +60,32 @@ func TestGenerateDiff(t *testing.T) {
 			},
 			patch:   func() {},
 			want:    []byte(`[{"Name":{"before":"Alhamsya","after":"Bintang"}}]`),
+			wantErr: false,
+		},
+		{
+			name: "When_nestedStructureDataIsDifferent_ReturnSuccess",
+			args: args{
+				origin: &ContactInfo{
+					Name: "Alhamsya",
+					Phone: Phone{
+						PhoneNumber: "085xxxxxxxx",
+					},
+					Address: Address{
+						City: "Jakarta",
+					},
+				},
+				new: &ContactInfo{
+					Name: "Alhamsya Bintang Dyasta",
+					Phone: Phone{
+						PhoneNumber: "082xxxxxxxx",
+					},
+					Address: Address{
+						City: "Kediri",
+					},
+				},
+			},
+			patch:   func() {},
+			want:    []byte(`[{"Name":{"before":"Alhamsya","after":"Alhamsya Bintang Dyasta"}},{"Phone":{"PhoneNumber":{"before":"085xxxxxxxx","after":"082xxxxxxxx"}}},{"Address":{"City":{"before":"Jakarta","after":"Kediri"}}}]`),
 			wantErr: false,
 		},
 		{

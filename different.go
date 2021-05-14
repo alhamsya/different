@@ -10,14 +10,14 @@ import (
 )
 
 //GenerateDiff generate different data
-func GenerateDiff(origin interface{}, new interface{}) ([]byte, error) {
+func GenerateDiff(originData interface{}, newData interface{}) ([]byte, error) {
 	//compare deep equal struct
-	if reflect.DeepEqual(origin, new) {
+	if reflect.DeepEqual(originData, newData) {
 		return nil, nil
 	}
 
 	//compare data
-	changelog, err := diff.Diff(origin, new)
+	changelog, err := diff.Diff(originData, newData)
 	if err != nil {
 		return nil, GenerateError(err, "library")
 	}
@@ -26,7 +26,7 @@ func GenerateDiff(origin interface{}, new interface{}) ([]byte, error) {
 	var temp []interface{}
 	for _, data := range changelog {
 		if data.Type != diff.UPDATE {
-			return nil, GenerateError(errors.New("type different struct not update"), "origin")
+			return nil, GenerateError(errors.New("type different struct not update"), "originData")
 		}
 
 		var res interface{}

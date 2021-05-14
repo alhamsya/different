@@ -3,23 +3,44 @@ package different
 import "testing"
 
 func BenchmarkGenerateDiff(b *testing.B) {
-	type User struct {
-		Name string
-		Age  int `diff:"-"`
+	type Phone struct {
+		Type        string
+		PhoneNumber string
 	}
 
-	origin := &User{
+	type Address struct {
+		City   string
+		Street string
+	}
+
+	type ContactInfo struct {
+		Name  string
+		Phone Phone
+		Address
+	}
+
+	origin := &ContactInfo{
 		Name: "Alhamsya",
-		Age:  10,
+		Phone: Phone{
+			PhoneNumber: "085xxxxxxxx",
+		},
+		Address: Address{
+			City: "Jakarta",
+		},
 	}
 
-	new := &User{
-		Name: "Bintang",
-		Age:  10,
+	newData := &ContactInfo{
+		Name: "Alhamsya Bintang Dyasta",
+		Phone: Phone{
+			PhoneNumber: "082xxxxxxxx",
+		},
+		Address: Address{
+			City: "Kediri",
+		},
 	}
 
 	b.ReportAllocs()
 	for i := 0; i < b.N; i++ {
-		GenerateDiff(origin, new)
+		GenerateDiff(origin, newData)
 	}
 }
