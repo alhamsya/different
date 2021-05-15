@@ -10,7 +10,7 @@ Library different value of struct.
 ## Installation
 
 ```bash
-go get -u github.com/alhamsya/different
+go get github.com/alhamsya/different
 ```
 
 ## Library Dependencies
