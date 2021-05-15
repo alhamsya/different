@@ -10,7 +10,7 @@ Library different value of struct.
 ## Installation
 
 ```bash
-go get github.com/alhamsya/different
+go get -u github.com/alhamsya/different
 ```
 
 ## Library Dependencies
@@ -22,11 +22,11 @@ go get github.com/alhamsya/different
 
 ## Benchmark
 
-| Function     | CPU | Number Operation | Time Required | allocation bytes | allocation times |
-| ------------ | --- | ---------------- | ------------- | ---------------- | ---------------- |
-| GenerateDiff | 1   | 419802           | 2392 ns/op    | 1440 B/op        | 28 allocs/op     |
-| GenerateDiff | 4   | 429812           | 2392 ns/op    | 1440 B/op        | 28 allocs/op     |
-| GenerateDiff | 8   | 427735           | 2451 ns/op    | 1440 B/op        | 28 allocs/op     |
+| Function     | CPU | Number of Operation | Time Required | Allocation Bytes | Allocation Times |
+| ------------ | --- | ------------------- | ------------- | ---------------- | ---------------- |
+| GenerateDiff | 1   | 419802              | 2392 ns/op    | 1440 B/op        | 28 allocs/op     |
+| GenerateDiff | 4   | 429812              | 2392 ns/op    | 1440 B/op        | 28 allocs/op     |
+| GenerateDiff | 8   | 427735              | 2451 ns/op    | 1440 B/op        | 28 allocs/op     |
 
 ```go
 Showing nodes accounting for 1290ms, 56.09% of 2300ms total
