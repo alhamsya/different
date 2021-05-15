@@ -7,6 +7,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+//GenerateError generate builder error
 func GenerateError(err error, flag string, args ...string) error {
 	var msg string
 	var strPkg string
