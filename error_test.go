@@ -37,7 +37,7 @@ func TestGenerateError(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := GenerateError(tt.args.err, tt.args.flag, tt.args.args...); (err != nil) != tt.wantErr {
+			if err := generateError(tt.args.err, tt.args.flag, tt.args.args...); (err != nil) != tt.wantErr {
 				t.Errorf("GenerateError() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})

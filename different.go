@@ -18,7 +18,7 @@ func GenerateDiff(originData interface{}, newData interface{}) ([]byte, error) {
 	//compare data
 	changelog, err := diff.Diff(originData, newData)
 	if err != nil {
-		return nil, GenerateError(err, "library")
+		return nil, generateError(err, "library")
 	}
 
 	//builder different value
@@ -31,7 +31,7 @@ func GenerateDiff(originData interface{}, newData interface{}) ([]byte, error) {
 				"after":  data.To,
 			}
 		} else {
-			res = BuildBeforeAfter(data)
+			res = buildBeforeAfter(data)
 		}
 		temp = append(temp, res)
 	}
@@ -39,7 +39,7 @@ func GenerateDiff(originData interface{}, newData interface{}) ([]byte, error) {
 	//generate json marshal
 	result, err := jsoniter.Marshal(&temp)
 	if err != nil {
-		return nil, GenerateError(err, "jsoniter")
+		return nil, generateError(err, "jsoniter")
 	}
 
 	//result different data
